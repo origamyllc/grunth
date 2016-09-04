@@ -1,4 +1,4 @@
-var logger = require('./grunth.bunyan.js');
+
 var uuid = require('uuid');
 var  _ = require('lodash');
 
@@ -10,11 +10,11 @@ var hooker  = (function () {
         return {
             hook : function (req,app) {
                 var meta = {};
-                req.locals = app.locals || {};
+
                 req.id = uuid.v4();
                 _.extend(meta, {
                     requestId: req.id,
-                    env: req.locals.settings.env,
+                    env: app.locals.settings.env,
                     host: req.headers.host.split(':')[0],
                     port: req.headers.host.split(':')[1],
                     browser : req.useragent.browser,
@@ -24,7 +24,6 @@ var hooker  = (function () {
                     url:req.url,
                     method: req.method
                 });
-                req._metadata = meta;
                 return meta;
             }
         };
