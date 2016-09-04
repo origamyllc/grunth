@@ -1,40 +1,52 @@
-var request_hooker = require('./src/grunth.request.hook.js');
-var bunyan_hooker = require('./src/grunth.bunyan.hook.js');
-var bunyan_logger = require('./src/grunth.bunyan.js');
+var req = {
+  "method": "GET",
+  "url": "/path?q=1#anchor",
+  "headers": {
+    "x-hi": "Mom",
+    "connection": "close",
+    "host":"hostname",
+  },
+  "useragent":{"browser":"chrome"},
+  "remoteAddress": "120.0.0.1",
+  "remotePort": 51244
+}
+
+var app = {
+   locals:{
+     settings:{}
+   }
+}
 
 
-var uuid = require('uuid');
-var  _ = require('lodash');
+var  $meta   = require('./src/grunth.request.hook.js');
+var  logger = require('./src/grunth.bunyan.hook.js');
 
-var hooker  = (function () {
-    // Instance stores a reference to the Singleton
-    var instance;
+var $grunth  = (function () {
+  // Instance stores a reference to the Singleton
+  var instance;
 
-    function init() {
-        return {
-            hook: function (req, app) {
-                request_hooker.hook(req, app);
-                bunyan_hooker.hook(req._metadata)
-            },
-            $logger:bunyan_logger
-        }
+  function init() {
+    $meta.hook(req,app)
+    var $logger = logger.hook(req);
 
+    return{
+      $logger:$logger
     }
+  }
 
-    return {
-        // Get the Singleton instance if one exists
-        // or create one if it doesn't
-        getInstance: function () {
-
-            if ( !instance ) {
-                instance = init();
-            }
-
-            return instance;
-        }
-
-    };
+  return {
+    // Get the Singleton instance if one exists
+    // or create one if it doesn't
+    app:null,
+    hook:function(req){
+      if ( !instance ) {
+        instance = init(req,this.app);
+      }
+      return instance.$logger;
+    },
+    use: function (app) {
+       this.app = app;
+    }
+  };
 
 })();
-
-module.exports = hooker.getInstance();
