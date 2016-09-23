@@ -2,14 +2,12 @@
   "name": "grunth",
   "description": "logger for fold.js",
   "author": "prashun javeri <prashun.javeri@monkeypatched.com> (http://monkeypatched.com)",
-  "version": "1.0.2",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EvanHahn/startInterval.git"
+  "version": "0.0.3dv",
+  "main": "./bin/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "babel src -d cut"
   },
-  "bugs": "https://github.com/EvanHahn/startInterval/issues",
-  "license": "WTFPL",
   "devDependencies": {
     "chai": "1.9.x",
     "sinon": "1.9.x",
